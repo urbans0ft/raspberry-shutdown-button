@@ -1,0 +1,9 @@
+# ignore hidden files
+.*
+
+# but this one
+!.gitignore
+
+# ignore binaries
+shutdown
+bin/
