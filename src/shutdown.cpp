@@ -22,7 +22,6 @@ using std::endl;
 void ctrl_c(int signo)
 {
     DBGPRINT("Ctrl + C Received.");
-
     exit(0);
 }
 
@@ -35,9 +34,8 @@ int main (int argc, char* argv[])
 	signal(SIGINT, ctrl_c);
 	DBGPRINT("Ctrl + C Handler created.");
 
-	pin05.setDetect(PinDetect::Low);
-
-	Bcm2835::Instance().delay(500ms);
+	const auto& bcm = Bcm2835::Instance();
+	pin05.setDetect(PinDetect::Low); // detect pin low => button press
 
 	// enter reading loop
 	do {
@@ -46,18 +44,17 @@ int main (int argc, char* argv[])
 		if (pin05.hasDetected() && pin05.read() == PinLevel::Low)
 		{
 			pin05.setDetect(PinDetect::RisingEdge); // there mustn't be a rising edge
-			bcm2835_delay(5000);
+			bcm.delay(5000ms);                      // within 5sec
 			if (!pin05.hasDetected())
 			{
-				cout << "Button down for 5 seconds" << endl;
+				cout << "Button down for 5 seconds." << endl;
 				break;
 			}
 			// start again
 			pin05.setDetect(PinDetect::Low);
 		}
-		bcm2835_delay(500); // 500ms
+		bcm.delay(500ms);
 	} while (true);
 
-	// never reached, see: ctrl_c()
 	return 0;
 }

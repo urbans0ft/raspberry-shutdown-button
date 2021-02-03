@@ -2,7 +2,6 @@
 #define _BCM2835_H_
 
 #include "IPin.h"
-#include "PullUpPin.h"
 
 #include <type_traits>
 #include <chrono>
@@ -30,8 +29,11 @@ class Bcm2835
 			return T{pinNo};
 		}
 
-		void delay(const std::chrono::milliseconds& ms);
-		void delay(const std::chrono::microseconds& us);
+#ifdef delay // definde in the bcm2835 library
+#undef delay
+#endif
+		void delay(const std::chrono::milliseconds& ms) const noexcept;
+		void delay(const std::chrono::microseconds& us) const noexcept;
 
 	private:
 		Bcm2835();
