@@ -9,12 +9,25 @@
 #include <iostream>
 #include <chrono>
 
+#ifndef PIN_NO
+#define PIN_NO Pin05 // default shutdown pin
+#endif
+
+#ifndef SAFETY_DELAY
+#define SAFETY_DELAY 3000ms // default button down time before shutdown
+#endif
+
+#ifndef POLL_DELAY
+#define POLL_DELAY 500ms // default pin polling interval
+#endif
+
 using bcm::Bcm2835;
 using bcm::PinDetect;
 using bcm::PinLevel;
 using bcm::PinNumber;
 using bcm::PullUpPin;
 
+using std::chrono::milliseconds;
 using std::cout;
 using std::endl;
 
@@ -25,7 +38,7 @@ void ctrl_c(int signo)
     exit(0);
 }
 
-auto pin05 = Bcm2835::Instance().create<PullUpPin, PinNumber::Pin05>();
+auto pin = Bcm2835::Instance().create<PullUpPin, PinNumber::PIN_NO>();
 
 int main (int argc, char* argv[])
 {
@@ -35,25 +48,26 @@ int main (int argc, char* argv[])
 	DBGPRINT("Ctrl + C Handler created.");
 
 	const auto& bcm = Bcm2835::Instance();
-	pin05.setDetect(PinDetect::Low); // detect pin low => button press
+	
+	pin.setDetect(PinDetect::Low); // detect pin low => button press
 
 	// enter reading loop
 	do {
-		DBGPRINT("Pin is %s", (pin05.read() == PinLevel::High ? "HIGH" : "LOW"));
+		DBGPRINT("Pin is %s", (pin.read() == PinLevel::High ? "HIGH" : "LOW"));
 		// check if a LOW-event occured and pin is still low
-		if (pin05.hasDetected() && pin05.read() == PinLevel::Low)
+		if (pin.hasDetected() && pin.read() == PinLevel::Low)
 		{
-			pin05.setDetect(PinDetect::RisingEdge); // there mustn't be a rising edge
-			bcm.delay(5000ms);                      // within 5sec
-			if (!pin05.hasDetected())
+			pin.setDetect(PinDetect::RisingEdge); // there mustn't be a rising edge
+			bcm.delay(SAFETY_DELAY);              // within 5sec
+			if (!pin.hasDetected())
 			{
-				cout << "Button down for 5 seconds." << endl;
+				cout << "Button down for " << SAFETY_DELAY.count() << " ms." << endl;
 				break;
 			}
 			// start again
-			pin05.setDetect(PinDetect::Low);
+			pin.setDetect(PinDetect::Low);
 		}
-		bcm.delay(500ms);
+		bcm.delay(POLL_DELAY);
 	} while (true);
 
 	return 0;

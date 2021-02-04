@@ -24,6 +24,17 @@ CC     = g++
 CFLAGS = -Wall -c
 LFLAGS = -lbcm2835
 
+# parse command line arguments
+ifdef PIN_NO
+	CFLAGS += -DPIN_NO=$(PIN_NO)
+endif
+ifdef SAFETY_DELAY
+	CFLAGS += -DSAFETY_DELAY=$(SAFETY_DELAY)
+endif
+ifdef POLL_DELAY
+	CFLAGS += -DPOLL_DELAY=$(POLL_DELAY)
+endif
+
 # Create bin dir
 $(shell mkdir -p ${BIN_DIR})
 
@@ -47,6 +58,7 @@ release: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LFLAGS)
 	@echo "$(TARGET) built!"
+	@echo $(VAR)
 
 # Compile sources to object files
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp
