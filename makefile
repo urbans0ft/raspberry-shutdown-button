@@ -58,7 +58,6 @@ release: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) -o $(TARGET) $(OBJS) $(LFLAGS)
 	@echo "$(TARGET) built!"
-	@echo $(VAR)
 
 # Compile sources to object files
 $(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp
