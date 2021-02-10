@@ -70,5 +70,7 @@ int main (int argc, char* argv[])
 		bcm.delay(POLL_DELAY);
 	} while (true);
 
+	system("shutdown -h now"); // shutdown system
+
 	return 0;
 }
