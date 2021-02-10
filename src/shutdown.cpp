@@ -1,3 +1,4 @@
+#include "shutdown.h"
 #include "debug.h"
 #include "Bcm2835.h"
 #include "IPin.h"
