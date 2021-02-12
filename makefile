@@ -21,8 +21,8 @@ OBJS = $(patsubst ${SRC_DIR}/%.cpp, ${BIN_DIR}/%.o, ${SRCS})
 
 # Release-independent Compiler & (Linker-)Flags
 CC     = g++
-CFLAGS = -Wall -c
-LFLAGS = -lbcm2835
+CFLAGS = -std=c++17 -Wall -c
+LFLAGS = -lbcm2835 -lstdc++fs
 
 # parse command line arguments
 ifdef PIN_NO
@@ -81,7 +81,6 @@ bin/PullUpPin.o: src/PullUpPin.h src/InputPin.h src/IPin.h src/APin.h
 bin/PullUpPin.o: src/debug.h
 bin/APin.o: src/APin.h src/IPin.h src/debug.h
 bin/InputPin.o: src/InputPin.h src/IPin.h src/APin.h src/debug.h
-bin/shutdown.o: src/debug.h src/Bcm2835.h src/IPin.h src/PullUpPin.h
-bin/shutdown.o: src/InputPin.h src/APin.h
-bin/Bcm2835.o: src/Bcm2835.h src/IPin.h src/PullUpPin.h src/InputPin.h
-bin/Bcm2835.o: src/APin.h src/debug.h
+bin/shutdown.o: src/shutdown.h src/debug.h src/Bcm2835.h src/IPin.h
+bin/shutdown.o: src/PullUpPin.h src/InputPin.h src/APin.h
+bin/Bcm2835.o: src/Bcm2835.h src/IPin.h src/debug.h
