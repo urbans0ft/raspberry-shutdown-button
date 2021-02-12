@@ -5,7 +5,7 @@
 ## Usage
 
 To install the shutdown daemon with the configuration shown in the sketch
-above use the latest release and execute the following command.
+above use the [latest release](https://github.com/urbans0ft/raspberry-shutdown-button/releases/latest) and execute the following command.
 
 ```
 sudo ./shutdown -I
